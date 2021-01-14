@@ -7,7 +7,7 @@
               Jika ingin mencetak Slip, gunakan tombol download di pojok kiri bawah
             </div>
 
-
+ 
             <!-- Main content -->
             <div class="invoice p-3 mb-3">
               <!-- title row -->
@@ -38,7 +38,8 @@
                     <strong><?=ucwords($data->nama)?></strong><br>
                     NIP : <?=$data->nip?><br>
                     Email: <?=$data->email?><br>
-                    Departemen : <?=$data->departemen?>
+                    Departemen : <?=$data->departemen?><br>
+                    Gaji perhari : Rp. <?=number_format($data->gaji)?>
                   </address>
                 </div>
                 <!-- /.col -->
@@ -51,15 +52,23 @@
                   <table class="table table-striped">
                       <tr>
                         <th style="width:50%">Jumlah Kehadiran :</th>
-                        <td><?=$absen?> hari x Rp. 100.000</td>
+                        <td><?=$absen?> hari x  Rp. <?=number_format($data->gaji)?></td>
                       </tr>
                       <tr>
                         <th>Jumlah Cuti :</th>
-                        <td><?=$jumlah?> hari x Rp. 70.000</td>
+                        <td><?=$cuti?> hari x Rp. <?=number_format($data->gaji)?></td>
+                      </tr>
+                      <tr>
+                        <th>Jumlah Sakit :</th>
+                        <td><?=$sakit?> hari x Rp. <?=number_format($data->gaji)?></td>
+                      </tr>
+                      <tr>
+                        <th>Jumlah Izin Tidak Masuk :</th>
+                        <td><?=$izin?> hari x Rp. <?=number_format(0)?></td>
                       </tr>
                       <tr>
                         <th>Total :</th>
-                        <td>Rp. <?=number_format(($absen * 100000) + ($jumlah * 70000))?></td>
+                        <td>Rp. <?=number_format(($absen * $data->gaji) + ($cuti * $data->gaji) + ($sakit * $data->gaji))?></td>
                       </tr>
                     </table>
                 </div>

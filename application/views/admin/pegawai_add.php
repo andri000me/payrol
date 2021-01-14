@@ -44,6 +44,10 @@
                     <label>Waktu masuk</label>
                     <input type="date" name="masuk" class="form-control" required="">
                   </div>
+                  <div class="form-group">
+                    <label>Gaji</label>
+                    <input type="number" name="gaji" class="form-control" required="">
+                  </div>
                 </div>
                 <div class="card-footer">
                   <a href="<?=base_url('admin/pegawai')?>" class="btn btn-danger">Kembali</a>

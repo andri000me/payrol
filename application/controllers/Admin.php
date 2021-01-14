@@ -12,11 +12,17 @@ class Admin extends CI_Controller {
 			redirect('auth');
 		}
 	}
-	
+	 
 	public function index()
 	{
+		$tahun 			= date('Y');
+		$bulan 			= date('m');
+		$hari 			= date('d');
 		$data['web']	= $this->web;
 		$data['pegawai']= $this->M_data->pegawai()->num_rows();
+		$data['hadir']	= $this->M_data->hadirtoday($tahun,$bulan,$hari)->num_rows();
+		$data['cuti']	= $this->M_data->cutitoday($tahun,$bulan,$hari)->num_rows();
+		$data['izin']	= $this->M_data->izintoday($tahun,$bulan,$hari)->num_rows() + $this->M_data->sakittoday($tahun,$bulan,$hari)->num_rows();
 		$data['absensi']= $this->M_data->absen()->num_rows();
 		$data['departemen']= $this->db->get('departemen')->num_rows();
 		$data['title']	= 'Dashboard';
@@ -75,7 +81,7 @@ class Admin extends CI_Controller {
 		$data['web']	= $this->web;
 		$data['data']	= $this->M_data->pegawai()->result();
 		$data['title']	= 'Data Pegawai';
-		$data['body']	= 'admin/pegawai';
+		$data['body']	= 'admin/pegawai'; 
 		$this->load->view('template',$data);
 	}
 	public function pegawai_add()
@@ -101,6 +107,7 @@ class Admin extends CI_Controller {
 			'jenis_kelamin'	=> $p['jenis_kelamin'],
 			'id_departemen'	=> $p['departemen'],
 			'waktu_masuk'	=> $p['masuk'],
+			'gaji'			=> $p['gaji'],
 		];
 		$this->db->trans_start();
 		$this->db->insert('user',$user);
@@ -129,6 +136,7 @@ class Admin extends CI_Controller {
 			'jenis_kelamin'	=> $p['jenis_kelamin'],
 			'id_departemen'	=> $p['departemen'],
 			'waktu_masuk'	=> $p['masuk'],
+			'gaji'			=> $p['gaji'],
 		];
 		$this->db->trans_start();
 		$this->db->update('user',$user,['nip'=>$id]);
@@ -302,5 +310,14 @@ class Admin extends CI_Controller {
 			$this->session->set_flashdata('message', 'swal("Ops!", "Anda harus login", "error");');
 				redirect('auth');
 		}
+	}
+	//penggajian
+	public function penggajian()
+	{
+		$data['list']	= $this->M_data->pegawai()->result();
+		$data['web']	= $this->web;
+		$data['title']	= 'Penggajian Karyawan';
+		$data['body']	= 'admin/penggajian';
+		$this->load->view('template',$data);
 	}
 }

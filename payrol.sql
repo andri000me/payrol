@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 10, 2021 at 03:43 PM
+-- Generation Time: Jan 14, 2021 at 07:03 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.3.20
 
@@ -30,20 +30,19 @@ SET time_zone = "+00:00";
 CREATE TABLE `absen` (
   `id_absen` int(11) NOT NULL,
   `nip` varchar(50) NOT NULL,
-  `waktu` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `waktu` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `keterangan` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `absen`
 --
 
-INSERT INTO `absen` (`id_absen`, `nip`, `waktu`) VALUES
-(1, '123', '2020-11-18 20:50:32'),
-(2, '123', '2020-11-18 20:50:34'),
-(3, '123', '2020-11-21 18:32:32'),
-(4, '123', '2020-12-21 15:58:47'),
-(5, '123', '2020-12-21 15:59:18'),
-(6, '1141', '2020-12-21 16:00:11');
+INSERT INTO `absen` (`id_absen`, `nip`, `waktu`, `keterangan`) VALUES
+(1, '123', '2021-01-14 15:44:29', 'masuk'),
+(2, '123', '2021-01-14 15:44:33', 'pulang'),
+(3, '123', '2021-01-14 17:28:13', 'masuk'),
+(4, '123', '2021-01-14 17:28:34', 'pulang');
 
 -- --------------------------------------------------------
 
@@ -54,8 +53,8 @@ INSERT INTO `absen` (`id_absen`, `nip`, `waktu`) VALUES
 CREATE TABLE `cuti` (
   `id_cuti` int(11) NOT NULL,
   `nip` varchar(50) NOT NULL,
-  `mulai` date NOT NULL,
-  `akhir` date NOT NULL,
+  `jenis_cuti` enum('cuti','izin','sakit') NOT NULL,
+  `bukti` varchar(254) DEFAULT NULL,
   `alasan` text NOT NULL,
   `status` enum('diajukan','diterima','ditolak') NOT NULL,
   `waktu_pengajuan` timestamp NOT NULL DEFAULT current_timestamp()
@@ -65,8 +64,8 @@ CREATE TABLE `cuti` (
 -- Dumping data for table `cuti`
 --
 
-INSERT INTO `cuti` (`id_cuti`, `nip`, `mulai`, `akhir`, `alasan`, `status`, `waktu_pengajuan`) VALUES
-(2, '123', '2020-12-17', '2020-12-18', 'wefwfw', 'diajukan', '2020-12-22 02:30:35');
+INSERT INTO `cuti` (`id_cuti`, `nip`, `jenis_cuti`, `bukti`, `alasan`, `status`, `waktu_pengajuan`) VALUES
+(1, '123', 'sakit', 'nihiwatu.jpg', 'testing', 'diterima', '2021-01-14 17:14:54');
 
 -- --------------------------------------------------------
 
@@ -90,6 +89,26 @@ INSERT INTO `departemen` (`departemen_id`, `departemen`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `detailcuti`
+--
+
+CREATE TABLE `detailcuti` (
+  `id_detail` int(11) NOT NULL,
+  `id_cuti` int(11) NOT NULL,
+  `tanggal` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `detailcuti`
+--
+
+INSERT INTO `detailcuti` (`id_detail`, `id_cuti`, `tanggal`) VALUES
+(1, 1, '2021-01-15'),
+(2, 1, '2021-01-16');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pegawai`
 --
 
@@ -97,16 +116,18 @@ CREATE TABLE `pegawai` (
   `nip` varchar(50) NOT NULL,
   `jenis_kelamin` enum('L','P') NOT NULL,
   `waktu_masuk` date NOT NULL,
-  `id_departemen` int(11) NOT NULL
+  `id_departemen` int(11) NOT NULL,
+  `gaji` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `pegawai`
 --
 
-INSERT INTO `pegawai` (`nip`, `jenis_kelamin`, `waktu_masuk`, `id_departemen`) VALUES
-('1141', 'P', '2020-12-01', 2),
-('123', 'L', '2020-12-01', 1);
+INSERT INTO `pegawai` (`nip`, `jenis_kelamin`, `waktu_masuk`, `id_departemen`, `gaji`) VALUES
+('1141', 'P', '2020-12-01', 2, 100000),
+('123', 'L', '2020-12-01', 1, 90000),
+('13424', 'L', '2021-01-01', 2, 80000);
 
 -- --------------------------------------------------------
 
@@ -130,7 +151,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`user_id`, `nama`, `email`, `password`, `level`, `nip`) VALUES
 (1, 'Administrator', 'admin@admin.com', '202cb962ac59075b964b07152d234b70', 'admin', NULL),
 (2, 'Yudi Setyawan', 'yudi@gmail.com', '202cb962ac59075b964b07152d234b70', 'pegawai', '123'),
-(5, 'Neprisa', 'neprisa@gmail.com', '202cb962ac59075b964b07152d234b70', 'pegawai', '1141');
+(5, 'Neprisa', 'neprisa@gmail.com', '202cb962ac59075b964b07152d234b70', 'pegawai', '1141'),
+(7, 'Luthfii', 'luthfi@gmail.com', 'eb17e1c03643c971ab35c22d86587541', 'pegawai', '13424');
 
 -- --------------------------------------------------------
 
@@ -178,6 +200,12 @@ ALTER TABLE `departemen`
   ADD PRIMARY KEY (`departemen_id`);
 
 --
+-- Indexes for table `detailcuti`
+--
+ALTER TABLE `detailcuti`
+  ADD PRIMARY KEY (`id_detail`);
+
+--
 -- Indexes for table `pegawai`
 --
 ALTER TABLE `pegawai`
@@ -203,13 +231,13 @@ ALTER TABLE `web`
 -- AUTO_INCREMENT for table `absen`
 --
 ALTER TABLE `absen`
-  MODIFY `id_absen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_absen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `cuti`
 --
 ALTER TABLE `cuti`
-  MODIFY `id_cuti` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_cuti` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `departemen`
@@ -218,10 +246,16 @@ ALTER TABLE `departemen`
   MODIFY `departemen_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `detailcuti`
+--
+ALTER TABLE `detailcuti`
+  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `web`

@@ -10,7 +10,7 @@ class Pegawai extends CI_Controller {
 			$this->session->set_flashdata('message', 'swal("Ops!", "Anda haru login sebagai pegawai", "error");');
 			redirect('auth');
 		}
-		date_default_timezone_set ( 'asia/jakarta' );
+		date_default_timezone_set ( 'asia/jakarta' ); 
 	}
 	
 	public function index()
@@ -20,6 +20,7 @@ class Pegawai extends CI_Controller {
 		$hari 			= date('d');
 		$absen			= $this->M_data->absendaily($this->session->userdata('nip'),$tahun,$bulan,$hari); 
 		if ($absen->num_rows() == 0) { $data['waktu'] = 'masuk'; }
+		elseif ($absen->num_rows() == 1) { $data['waktu'] = 'pulang'; }
 		else { $data['waktu'] = 'dilarang'; }
 		$data['web']	= $this->web;
 		$data['title']	= 'Dashboard';
@@ -32,7 +33,8 @@ class Pegawai extends CI_Controller {
 		$id = $this->session->userdata('nip');
 		$p = $this->input->post();
 		$data = [
-			'nip'	=> $id
+			'nip'	=> $id,
+			'keterangan' => $p['ket']
 		];
 		$this->db->insert('absen',$data);
 		$this->session->set_flashdata('message', 'swal("Berhasil!", "Melakukan absen", "success");');
@@ -57,27 +59,65 @@ class Pegawai extends CI_Controller {
 		$dt2 = new DateTime(date('Y-m-d'));
 		$d = $dt2->diff($dt1)->days + 1;
 		$data['bakti']	= $d;
-		$data['title']	= 'Data Cuti';
+		$data['title']	= 'Data Permohonan Ketidakhadiran';
 		$data['body']	= 'pegawai/cuti';
 		$this->load->view('template',$data);
 	}
 	public function cuti_add()
 	{
 		$data['web']	= $this->web;
-		$data['title']	= 'Tambah Data Cuti';
+		$pegawai = $this->M_data->pegawaiid($this->session->userdata('nip'))->row();
+		$dt1 = new DateTime($pegawai->waktu_masuk);
+		$dt2 = new DateTime(date('Y-m-d'));
+		$d = $dt2->diff($dt1)->days + 1;
+		$data['bakti']	= $d;
+		$data['title']	= 'Tambah Data Ketidakhadiran';
 		$data['body']	= 'pegawai/cuti_add';
 		$this->load->view('template',$data);
 	}
 	public function cuti_simpan()
 	{
+		$this->db->trans_start();
 		$data = array(
-			'nip'	=> $this->session->userdata('nip'),
-			'mulai'	=> $this->input->post('mulai'),
-			'akhir'	=> $this->input->post('akhir'),
-			'alasan'=> $this->input->post('alasan'),
-			'status'=> 'diajukan'
+			'nip'			=> $this->session->userdata('nip'),
+			'jenis_cuti'	=> $this->input->post('jenis'),
+			'alasan'		=> $this->input->post('alasan'),
+			'status'		=> 'diajukan'
 		);
+
+		if (isset($_FILES['bukti']['name'])) {
+			$config['upload_path'] 		= './bukti/';
+			$config['allowed_types'] 	= 'gif|jpg|png|jpeg';
+			$config['overwrite']  		= true;
+			
+			$this->load->library('upload', $config);
+			
+			if ( ! $this->upload->do_upload('bukti')){
+				$this->session->set_flashdata('message', 'swal("Ops!", "Bukti gagal diupload", "erro");');
+				redirect('pegawai/cuti_add');
+			}
+			else{
+				$img = $this->upload->data();
+				$data['bukti'] = $img['file_name'];
+			}
+		}
+		
 		$this->db->insert('cuti',$data);
+		$cek = $this->db->query(" select * from cuti order by id_cuti desc limit 1 ")->row();
+		$dt1 = new DateTime($this->input->post('mulai'));
+		$dt2 = new DateTime($this->input->post('akhir'));
+		$jml = $dt2->diff($dt1)->days + 1;
+		$tgl1= $this->input->post('mulai');
+		$no  = 1;
+		for ($i=0; $i < $jml ; $i++) { 
+			$insert = array(
+				'id_cuti' => $cek->id_cuti,
+				'tanggal' => date('Y-m-d', strtotime('+'.$i.' days', strtotime($tgl1))),
+			);
+			$this->db->insert('detailcuti',$insert);
+		}
+
+		$this->db->trans_complete();
 		$this->session->set_flashdata('message', 'swal("Berhasil!", "Pengajuan cuti", "success");');
 		redirect('pegawai/cuti');
 	}
@@ -164,16 +204,10 @@ class Pegawai extends CI_Controller {
 		$tahun 			= date('Y');
 		$bulan 			= date('m');
 		$data['data']	= $this->M_data->pegawaiid($this->session->userdata('nip'))->row();
-		$data['absen']	= $this->M_data->absenbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
-		$cuti 			= $this->M_data->cutibulan($this->session->userdata('nip'),$tahun,$bulan)->result(); 
-		$jumlah = 0;
-		foreach ($cuti as $c) {
-			$dt1 = new DateTime($c->mulai);
-			$dt2 = new DateTime($c->akhir);
-			$d = $dt2->diff($dt1)->days + 1;
-			$jumlah += $d;
-		}
-		$data['jumlah'] = $jumlah;
+		$data['absen']  = $this->M_data->absenbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
+        $data['cuti']  	= $this->M_data->cutibulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
+        $data['sakit']  = $this->M_data->sakitbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
+        $data['izin']  	= $this->M_data->izinbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows();
 		$data['web']	= $this->web;
 		$data['title']	= 'Slip Gaji';
 		$data['body']	= 'pegawai/slip';
@@ -184,16 +218,10 @@ class Pegawai extends CI_Controller {
 		$tahun 			= date('Y');
 		$bulan 			= date('m');
 		$data['data']	= $this->M_data->pegawaiid($this->session->userdata('nip'))->row();
-		$data['absen']	= $this->M_data->absenbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
-		$cuti 			= $this->M_data->cutibulan($this->session->userdata('nip'),$tahun,$bulan)->result(); 
-		$jumlah = 0;
-		foreach ($cuti as $c) {
-			$dt1 = new DateTime($c->mulai);
-			$dt2 = new DateTime($c->akhir);
-			$d = $dt2->diff($dt1)->days + 1;
-			$jumlah += $d;
-		}
-		$data['jumlah'] = $jumlah;
+		$data['absen']  = $this->M_data->absenbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
+        $data['cuti']  	= $this->M_data->cutibulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
+        $data['sakit']  = $this->M_data->sakitbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows(); 
+        $data['izin']  	= $this->M_data->izinbulan($this->session->userdata('nip'),$tahun,$bulan)->num_rows();
 		$data['web']	= $this->web;
 		$data['title']	= 'Slip Gaji '.$this->session->userdata('nama');
 		$this->load->view('pegawai/slip_print',$data);

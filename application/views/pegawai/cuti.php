@@ -6,36 +6,44 @@
           <section class="col-lg-12 connectedSortable">
             <div class="callout callout-info">
               <h5><i class="fas fa-info"></i> Note:</h5>
-              Fitur cuti hanya diberikan untuk pegawai yang sudah bekerja selama 1 tahun
+              Izin Cuti hanya diberikan untuk pegawai yang sudah bekerja selama 1 tahun ( Tidak terpotong gaji )<br>
+              Izin Tidak masuk diberikan untuk siapa saja ( Dipotong gaji FULL ) <br>
+              Izin Sakit masuk diberikan untuk siapa saja dibuktikan dengan surat keterangan dokter ( DTidak terpotong gaji )
             </div>
             <!-- Map card -->
             <div class="card">
               <div class="card-header"> <?=$title?> </h3>
-                <?php if ($bakti >= 356) { ?>
                   <a style="float: right;" href="<?=base_url('pegawai/cuti_add')?>" class="btn btn-sm btn-primary">Tambah data</a>
-                <?php } ?>
               </div>
               <div class="card-body table-responsive">
                 <table id="myTable" class="table table-bordered table-striped text-center">
                     <thead>
                       <th width="1%">No</th>
                       <th>Nama</th>
-                      <th>Waktu Cuti</th>
+                      <th>Jenis</th>
+                      <th>Waktu</th>
                       <th>Keterangan</th>
                       <th>Status</th>
                       <th>Opsi</th>
                     </thead>
                     <tbody>
-                      <?php $no=1; foreach ($data as $d) { ?>
+                      <?php $no=1; foreach ($data as $d) { 
+                        $cek = $this->db->query(" select min(tanggal) as mulai,max(tanggal) as akhir from detailcuti where id_cuti = '$d->id_cuti' ")->row();
+                      ?>
                       <tr>
                         <td width="1%"><?=$no++?></td>
                         <td><?=ucfirst($d->nama)?></td>
-                        <td><?=date('d/m/Y', strtotime($d->mulai))?> - <?=date('d/m/Y', strtotime($d->akhir))?></td>
-                        <td><?=ucfirst($d->alasan)?></td>
+                        <td><?=ucfirst($d->jenis_cuti)?></td>
+                        <td><?=date('d/m/Y', strtotime($cek->mulai))?> - <?=date('d/m/Y', strtotime($cek->akhir))?></td>
+                        <td>
+                          <?=ucfirst($d->alasan)?><br>
+                          <?php if ($d->jenis_cuti == 'sakit') { ?>
+                            <small>Bukti  <a target="_blank" href="<?=base_url('bukti/'.$d->bukti)?>" >Klik disini</a></small>
+                          <?php } ?>
+                        </td>
                         <td><?=ucfirst($d->status)?></td>
                         <td>
                           <?php if ($d->status == 'diajukan') { ?>
-                          <a href="<?=base_url('pegawai/cuti_edit/'.$d->id_cuti)?>" class="btn btn-primary btn-sm"><span class="fa fa-edit"></span></a>
                           <a onclick="return confirm('apakah anda yakin ingin menghapus pengajuan cuti ini?')" href="<?=base_url('pegawai/cuti_delete/'.$d->id_cuti)?>" class="btn btn-danger btn-sm"><span class="fa fa-trash"></span></a>
                           <?php } ?>
                           <?php if ($d->status == 'diterima') { ?>

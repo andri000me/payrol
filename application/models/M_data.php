@@ -83,18 +83,81 @@ class M_data extends CI_Model {
 		$this->db->select('*');
 		$this->db->from('absen');
 		$this->db->where('nip',$id);
+		$this->db->where('keterangan','masuk');
 		$this->db->where('year(waktu)',$tahun);
 		$this->db->where('month(waktu)',$bulan);
 		return $this->db->get();
 	}
 	function cutibulan($id,$tahun,$bulan)
 	{
+
+		$this->db->select('* ');
+		$this->db->from('cuti');
+		$this->db->join('detailcuti','cuti.id_cuti = detailcuti.id_cuti');
+		$this->db->where('nip',$id);
+		$this->db->where('jenis_cuti','cuti');
+		$this->db->where('status','diterima');
+		$this->db->where('year(tanggal)',$tahun);
+		$this->db->where('month(tanggal)',$bulan);
+		return $this->db->get();
+	}
+	function sakitbulan($id,$tahun,$bulan)
+	{
 		$this->db->select('*');
 		$this->db->from('cuti');
+		$this->db->join('detailcuti','cuti.id_cuti = detailcuti.id_cuti');
 		$this->db->where('nip',$id);
+		$this->db->where('jenis_cuti','sakit');
 		$this->db->where('status','diterima');
-		$this->db->where('year(waktu_pengajuan)',$tahun);
-		$this->db->where('month(waktu_pengajuan)',$bulan);
+		$this->db->where('year(tanggal)',$tahun);
+		$this->db->where('month(tanggal)',$bulan);
+		return $this->db->get();
+	}
+	function izinbulan($id,$tahun,$bulan)
+	{
+		$this->db->select('*');
+		$this->db->from('cuti');
+		$this->db->join('detailcuti','cuti.id_cuti = detailcuti.id_cuti');
+		$this->db->where('nip',$id);
+		$this->db->where('jenis_cuti','izin');
+		$this->db->where('status','diterima');
+		$this->db->where('year(tanggal)',$tahun);
+		$this->db->where('month(tanggal)',$bulan);
+		return $this->db->get();
+	}
+	function cutitoday($tahun,$bulan,$hari)
+	{
+		$this->db->select('*');
+		$this->db->from('cuti');
+		$this->db->join('detailcuti','cuti.id_cuti = detailcuti.id_cuti');
+		$this->db->where('jenis_cuti','cuti');
+		$this->db->where('status','diterima');
+		$this->db->where('year(tanggal)',$tahun);
+		$this->db->where('month(tanggal)',$bulan);
+		$this->db->where('day(tanggal)',$hari);
+		return $this->db->get();
+	}function izintoday($tahun,$bulan,$hari)
+	{
+		$this->db->select('*');
+		$this->db->from('cuti');
+		$this->db->join('detailcuti','cuti.id_cuti = detailcuti.id_cuti');
+		$this->db->where('jenis_cuti','izin');
+		$this->db->where('status','diterima');
+		$this->db->where('year(tanggal)',$tahun);
+		$this->db->where('month(tanggal)',$bulan);
+		$this->db->where('day(tanggal)',$hari);
+		return $this->db->get();
+	}
+	function sakittoday($tahun,$bulan,$hari)
+	{
+		$this->db->select('*');
+		$this->db->from('cuti');
+		$this->db->join('detailcuti','cuti.id_cuti = detailcuti.id_cuti');
+		$this->db->where('jenis_cuti','sakit');
+		$this->db->where('status','diterima');
+		$this->db->where('year(tanggal)',$tahun);
+		$this->db->where('month(tanggal)',$bulan);
+		$this->db->where('day(tanggal)',$hari);
 		return $this->db->get();
 	}
 
@@ -160,6 +223,17 @@ class M_data extends CI_Model {
 	 
 		return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
 	}
+	function hadirtoday($tahun,$bulan,$hari)
+	{
+		$this->db->select('*');
+		$this->db->from('absen');
+		$this->db->where('keterangan','masuk');
+		$this->db->where('year(waktu)',$tahun);
+		$this->db->where('month(waktu)',$bulan);
+		$this->db->where('day(waktu)',$hari);
+		return $this->db->get();
+	}
+
 
 }
 
