@@ -1,80 +1,67 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?=$web->nama?> | Log in</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="<?=base_url('assets/')?>plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="<?=base_url('assets/')?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="<?=base_url('assets/')?>dist/css/adminlte.min.css">
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>
+        <?=$web->nama?> | Login
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/login/css/style.css">
+    <!-- Favicon -->
+    <link href="<?php echo base_url(); ?>assets/img/<?=$web->logo?>" rel="icon" type="image/png">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+    <link href="<?php echo base_url(); ?>assets/assets_argon/js/plugins/nucleo/css/nucleo.css" rel="stylesheet" />
+    <link href="<?php echo base_url(); ?>assets/assets_argon/js/plugins/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="<?php echo base_url(); ?>assets/assets_argon/css/argon-dashboard.css?v=1.1.0" rel="stylesheet" />
+    <!--End of Tawk.to Script-->
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <a href="<?=base_url('assets/')?>index2.html"><b><?=$web->nama?> </b>Login</a>
-  </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
 
-      <form action="<?=base_url('auth/aksi_login')?>" method="post">
-        <div class="input-group mb-3">
-          <input type="email" class="form-control" name="email" required="" placeholder="Email">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
-          </div>
+<body>
+    <img class="wave" src="<?php echo base_url(); ?>assets/img/bg.png">
+    <div class="container">
+        <div class="img">
+            <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_rycdh53q.json" background="transparent"  speed="1"  style="width: 500px; height: 400px;" loop  autoplay></lottie-player>
         </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" name="password" required="" placeholder="Password">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
-          </div>
+        <div class="login-content">
+            <form action="<?=base_url('auth/aksi_login')?>" method="post">
+                <img src="<?php echo base_url(); ?>assets/img/about.svg">
+                <h2 class="title"><?=$web->nama?></h2>
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Email</h5>
+                         <input type="email" class="form-control" name="email" required="" >
+                    </div>
+                </div>
+                <div class="input-div pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Password</h5>
+                        <input type="password" class="form-control" name="password" required="" >
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary" style="background-color: #003b6f" value="Login">
+            </form>
         </div>
-        <div class="row">
-          <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember">
-              <label for="remember">
-                Remember Me
-              </label>
-            </div>
-          </div>
-          <!-- /.col -->
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
-          <!-- /.col -->
-        </div>
-      </form>
     </div>
-    <!-- /.login-card-body -->
-  </div>
-</div>
-<!-- /.login-box -->
-
-<!-- jQuery -->
-<script src="<?=base_url('assets/')?>plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="<?=base_url('assets/')?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="<?=base_url('assets/')?>dist/js/adminlte.min.js"></script>
-<script src="<?php echo base_url('assets/') ?>alert.js"></script>
-<?php echo "<script>".$this->session->flashdata('message')."</script>"?>
-
+    <script type="text/javascript" src="<?php echo base_url(); ?>assets/login/js/main.js"></script>
+    <script src="<?php echo base_url(); ?>assets/assets_argon/js/plugins/jquery/dist/jquery.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/assets_argon/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <!--   Optional JS   -->
+    <!--   Argon JS   -->
+    <script src="<?php echo base_url(); ?>assets/assets_argon/js/argon-dashboard.min.js?v=1.1.0"></script>
+    <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+    <script src="<?php echo base_url('assets/') ?>alert.js"></script>
+    <?php echo "<script>".$this->session->flashdata('message')."</script>"?>
 </body>
+
 </html>

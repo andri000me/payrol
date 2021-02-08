@@ -10,7 +10,7 @@
               <div class="card-header"> <?=$title?> </h3>
               </div>
               <div class="card-body table-responsive">
-                <table id="myTable" class="table table-bordered table-striped text-center">
+                <table id="table" class="table table-bordered table-striped text-center">
                     <thead>
                       <th>No</th>
                       <th>Nama</th>

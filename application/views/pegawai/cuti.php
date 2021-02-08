@@ -16,7 +16,7 @@
                   <a style="float: right;" href="<?=base_url('pegawai/cuti_add')?>" class="btn btn-sm btn-primary">Tambah data</a>
               </div>
               <div class="card-body table-responsive">
-                <table id="myTable" class="table table-bordered table-striped text-center">
+                <table id="table" class="table table-bordered table-striped text-center">
                     <thead>
                       <th width="1%">No</th>
                       <th>Nama</th>

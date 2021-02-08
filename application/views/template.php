@@ -29,12 +29,13 @@
   <!-- datatables -->
   <link rel="stylesheet" href="<?=base_url('assets/')?>plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="<?=base_url('assets/')?>plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-blue navbar-light">
+  <nav class="main-header navbar navbar-expand  navbar-light" style="background-color: #003b6f">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -54,7 +55,7 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #003b6f">
     <!-- Brand Logo -->
     <a href="#" class="brand-link " >
       <img src="<?=base_url('assets/')?>img/<?=$web->logo?>" alt="Logo <?=$web->nama?>" class="brand-image img-circle elevation-3"
@@ -168,8 +169,8 @@
 
   </div>
   <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <strong>Copyright &copy;<?=date('Y')?> <a href="#"><?=$web->nama?></a>.</strong>
+  <footer class="main-footer" style="background-color: #f27501; color: white">
+    <strong>Copyright &copy;<?=date('Y')?> <a href="#" style="color: white"><?=$web->nama?></a>.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
       Develop by <b><?=$web->author?></b>
@@ -223,11 +224,31 @@
 <script src="<?=base_url('assets/')?>plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="<?=base_url('assets/')?>plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="<?=base_url('assets/')?>plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"> </script>
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.html5.min.js"> </script>
+<script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.min.js"> </script>
+
 <script>
-  $(document).ready( function () {
-    $('#myTable').DataTable();
-  } );
+  $(document).ready(function() {
+    $('#myTable').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
 </script>
+<script>
+  $(document).ready(function() {
+    $('#table').DataTable( {
+    } );
+} );
+</script>
+
 <!-- sweetalert -->
 <script src="<?php echo base_url('assets/') ?>alert.js"></script>
 <?php echo "<script>".$this->session->flashdata('message')."</script>"?>
